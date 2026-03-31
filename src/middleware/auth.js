@@ -7,13 +7,13 @@ export const roles = {
 export const auth = (accessRoles = []) => {
   return async (socket, next) => {
     try {
-      const { token } = socket.handshake.auth;
+      const token = socket.handshake.auth?.token || socket.handshake.query?.token;
 
       if (!token) {
         return next(new Error("In-valid Token"));
       }
 
-      const decoded = jwt.verify(token,process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       if (!decoded?.id) {
         return next(new Error("Invalid token payload"));
       }
